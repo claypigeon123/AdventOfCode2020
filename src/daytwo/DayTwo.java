@@ -14,27 +14,14 @@ public class DayTwo {
         List<Entry> input = new ArrayList<>();
 
         while (scan.hasNextLine()) {
-            String line = scan.nextLine();
-            String[] data = new String[4];
-            Scanner lineScanner = new Scanner(line);
-
-            lineScanner.useDelimiter("-");
-            data[0] = lineScanner.next();
-
-            lineScanner.useDelimiter(" ");
-            data[1] = lineScanner.next();
-
-            lineScanner.useDelimiter(":");
-            data[2] = lineScanner.next();
-
-            lineScanner.useDelimiter(": ");
-            data[3] = lineScanner.next();
+            String[] data = scan.nextLine().split(" ");
+            String[] minmax = data[0].split("-");
 
             input.add(Entry.makeEntry(
-                    Integer.parseInt(data[0]),
-                    Math.abs(Integer.parseInt(data[1])),
-                    data[2].charAt(1),
-                    data[3]
+                    Integer.parseInt(minmax[0]),
+                    Integer.parseInt(minmax[1]),
+                    data[1].charAt(0),
+                    data[2]
             ));
         }
 
