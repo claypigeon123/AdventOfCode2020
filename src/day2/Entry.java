@@ -1,4 +1,4 @@
-package daytwo;
+package day2;
 
 class Entry {
     private boolean isValidPartOne;
