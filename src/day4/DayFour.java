@@ -32,21 +32,19 @@ public class DayFour {
         }
 
         // P1
-        int p1_validCount = 0;
         List<Map<String, String>> wholePassports = new ArrayList<>();
 
         for (Map<String, String> passport : input) {
             if (passport.keySet().containsAll(List.of(REQUIRED_FIELDS))) {
-                p1_validCount++;
                 wholePassports.add(passport);
             }
         }
 
         System.out.println("\nPart 1:");
-        System.out.println("Passports that have all required fields: " + p1_validCount);
+        System.out.println("Passports that have all required fields: " + wholePassports.size());
 
         // P2
-        int p2_validCount = 0;
+        int validCount = 0;
 
         for (Map<String, String> passport : wholePassports) {
             // byr
@@ -82,10 +80,10 @@ public class DayFour {
             String pid = passport.get("pid");
             if (pid.length() != 9) continue;
 
-            p2_validCount++;
+            validCount++;
         }
 
         System.out.println("\nPart 2:");
-        System.out.println("Passports that have all required fields & valid data: " + p2_validCount);
+        System.out.println("Passports that have all required fields & valid data: " + validCount);
     }
 }
