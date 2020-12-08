@@ -11,12 +11,6 @@ public class Instruction {
         this.hasRun = false;
     }
 
-    public Instruction(Instruction instruction) {
-        this.command = instruction.getCommand();
-        this.argument = instruction.getArgument();
-        this.hasRun = false;
-    }
-
     public String getCommand() {
         return command;
     }
