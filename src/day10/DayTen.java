@@ -74,7 +74,8 @@ public class DayTen {
             }
         }
 
-        // The first element (route) in the custom map is the most possible (and valid) number of combinations that exist.
+        // The value that belongs to the 0 key in the custom map is the ...
+        // ... most number of possible (and valid) combinations that exist.
         return routes.get(0L);
     }
 }
