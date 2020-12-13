@@ -18,12 +18,12 @@ public class SeatMap {
         rows.add(row);
     }
 
-    public int performSeatingAndCountOccupied() {
-        performSeating();
+    public int performSeatingAndCountOccupied(int part) {
+        performSeating(part == 1 ? 4 : 5);
         return countOccupiedSeats();
     }
 
-    private void performSeating() {
+    private void performSeating(int tolerance) {
         int changes;
         List<List<Character>> newPlan;
         do {
@@ -31,7 +31,7 @@ public class SeatMap {
             newPlan = makeDeepCopy(rows);
             for (int y = 0; y < rows.size(); y++) {
                 for (int x = 0; x < rows.get(y).size(); x++) {
-                    List<List<Character>> result = handleSeat(y, x, newPlan);
+                    List<List<Character>> result = handleSeat(y, x, newPlan, tolerance);
                     if (result != null) {
                         changes++;
                         newPlan = result;
@@ -42,24 +42,22 @@ public class SeatMap {
         } while (changes != 0);
     }
 
-    private List<List<Character>> handleSeat(int seatY, int seatX, List<List<Character>> newPlan) {
+    private List<List<Character>> handleSeat(int seatY, int seatX, List<List<Character>> newPlan, int tolerance) {
         char seat = rows.get(seatY).get(seatX);
 
         if (seat == '.') {
             return null;
         }
 
-        int adjacentOccupiedSeats = countAdjacentOccupiedSeats(seatY, seatX);
+        int adjacentOccupiedSeats = tolerance == 4 ? countAdjacentOccupiedSeatsPart1(seatY, seatX) : countAdjacentOccupiedSeatsPart2(seatY, seatX);
 
         if (seat == 'L') {
             if (adjacentOccupiedSeats == 0) {
-                //rows.get(seatY).set(seatX, '#');
                 newPlan.get(seatY).set(seatX, '#');
                 return newPlan;
             }
         } else if (seat == '#') {
-            if (adjacentOccupiedSeats >= 4) {
-                //rows.get(seatY).set(seatX, 'L');
+            if (adjacentOccupiedSeats >= tolerance) {
                 newPlan.get(seatY).set(seatX, 'L');
                 return newPlan;
             }
@@ -68,7 +66,7 @@ public class SeatMap {
         return null;
     }
 
-    private int countAdjacentOccupiedSeats(int seatY, int seatX) {
+    private int countAdjacentOccupiedSeatsPart1(int seatY, int seatX) {
         int adjacentOccupiedSeats = 0;
 
         int fromY = seatY == 0 ? 0 : seatY - 1;
@@ -79,14 +77,102 @@ public class SeatMap {
 
         for (int y = fromY; y < toY; y++) {
             for (int x = fromX; x < toX; x++) {
-                if (y == seatY && x == seatX) {
-                    continue;
-                }
+                if (y == seatY && x == seatX) continue;
 
                 if (rows.get(y).get(x) == '#') {
                     adjacentOccupiedSeats++;
                 }
             }
+        }
+
+        return adjacentOccupiedSeats;
+    }
+
+    private int countAdjacentOccupiedSeatsPart2(int seatY, int seatX) {
+        int adjacentOccupiedSeats = 0;
+
+        // Count horizontal left
+        int x = seatX, y = seatY;
+        while (x >= 0) {
+            if (rows.get(y).get(x) == '#' && x != seatX) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && x != seatX) break;
+            x--;
+        }
+
+        // Count horizontal right
+        x = seatX; y = seatY;
+        while (x < rows.get(y).size()) {
+            if (rows.get(y).get(x) == '#' && x != seatX) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && x != seatX) break;
+            x++;
+        }
+
+        // Count vertical up
+        x = seatX; y = seatY;
+        while (y >= 0) {
+            if (rows.get(y).get(x) == '#' && y != seatY) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && y != seatY) break;
+            y--;
+        }
+
+        // Count vertical down
+        x = seatX; y = seatY;
+        while (y < rows.size()) {
+            if (rows.get(y).get(x) == '#' && y != seatY) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && y != seatY) break;
+            y++;
+        }
+
+        // Count diagonal \ up
+        x = seatX; y = seatY;
+        while (y >= 0 && x >= 0) {
+            if (rows.get(y).get(x) == '#' && (y != seatY && x != seatX)) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && (y != seatY && x != seatX)) break;
+            y--;
+            x--;
+        }
+
+        // Count diagonal \ down
+        x = seatX; y = seatY;
+        while (y < rows.size() && x < rows.get(y).size()) {
+            if (rows.get(y).get(x) == '#' && (y != seatY && x != seatX)) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && (y != seatY && x != seatX)) break;
+            y++;
+            x++;
+        }
+
+        // Count diagonal / up
+        x = seatX; y = seatY;
+        while (y >= 0 && x < rows.get(y).size()) {
+            if (rows.get(y).get(x) == '#' && (y != seatY && x != seatX)) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && (y != seatY && x != seatX)) break;
+            y--;
+            x++;
+        }
+
+        // Count diagonal / down
+        x = seatX; y = seatY;
+        while (y < rows.size() && x >= 0) {
+            if (rows.get(y).get(x) == '#' && (y != seatY && x != seatX)) {
+                adjacentOccupiedSeats++;
+                break;
+            } else if (rows.get(y).get(x) == 'L' && (y != seatY && x != seatX)) break;
+            y++;
+            x--;
         }
 
         return adjacentOccupiedSeats;
