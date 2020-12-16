@@ -10,14 +10,14 @@ public class DayFifteen {
 
         // P1
         System.out.println("\nPart 1:");
-        System.out.println("The 2020th number spoken is: " + partOne(startingNumbers, 2020));
+        System.out.println("The 2020th number spoken is: " + play(startingNumbers, 2020));
 
         // P2
         System.out.println("\nPart 2:");
-        System.out.println("The 30000000th number spoken is: " + partOne(startingNumbers, 30000000));
+        System.out.println("The 30000000th number spoken is: " + play(startingNumbers, 30000000));
     }
 
-    private static int partOne(List<Integer> startingNumbers, int iterations) {
+    private static int play(List<Integer> startingNumbers, int iterations) {
         Map<Integer, NumberInfo> data = new HashMap<>();
 
         for (int i = 0; i < startingNumbers.size(); i++) {
@@ -25,7 +25,7 @@ public class DayFifteen {
         }
 
         int lastNumberHeard = startingNumbers.get(startingNumbers.size() - 1);
-        
+
         for (int i = startingNumbers.size(); i < iterations; i++) {
             NumberInfo currentInfo = data.get(lastNumberHeard);
             if (currentInfo.hasBeenMoreThanOnce()) {
